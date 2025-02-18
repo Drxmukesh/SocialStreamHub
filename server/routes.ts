@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { setupAuth } from "./auth";
 import { storage } from "./storage";
-import { insertPlatformSchema, insertScheduledPostSchema } from "@shared/schema";
+import { insertPlatformSchema, insertScheduledPostSchema, insertNoteSchema, insertWishlistSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Server {
   setupAuth(app);
@@ -46,6 +46,40 @@ export async function registerRoutes(app: Express): Server {
       userId: req.user.id,
     });
     res.status(201).json(post);
+  });
+
+  // Notes routes
+  app.get("/api/notes", async (req, res) => {
+    if (!req.user) return res.sendStatus(401);
+    const notes = await storage.getNotes(req.user.id);
+    res.json(notes);
+  });
+
+  app.post("/api/notes", async (req, res) => {
+    if (!req.user) return res.sendStatus(401);
+    const data = insertNoteSchema.parse(req.body);
+    const note = await storage.createNote({
+      ...data,
+      userId: req.user.id,
+    });
+    res.status(201).json(note);
+  });
+
+  // Wishlist routes
+  app.get("/api/wishlist", async (req, res) => {
+    if (!req.user) return res.sendStatus(401);
+    const items = await storage.getWishlistItems(req.user.id);
+    res.json(items);
+  });
+
+  app.post("/api/wishlist", async (req, res) => {
+    if (!req.user) return res.sendStatus(401);
+    const data = insertWishlistSchema.parse(req.body);
+    const item = await storage.createWishlistItem({
+      ...data,
+      userId: req.user.id,
+    });
+    res.status(201).json(item);
   });
 
   const httpServer = createServer(app);

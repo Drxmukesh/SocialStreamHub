@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { Platform } from "@shared/schema";
 import { SiInstagram, SiFacebook, SiWhatsapp, SiTelegram, SiYoutube, SiThreads, SiLinkedin, SiTiktok, SiPinterest, SiX } from "react-icons/si";
+import { NotesSection } from "@/components/notes-section";
+import { WishlistSection } from "@/components/wishlist-section";
 
 const platformConfig = {
   instagram: { icon: SiInstagram, name: "Instagram", color: "text-pink-500" },
@@ -28,7 +30,7 @@ export default function PlatformPage() {
   const config = platformConfig[type as keyof typeof platformConfig];
   const Icon = config?.icon;
 
-  if (!config) return null;
+  if (!config || !platform) return null;
 
   return (
     <div className="flex h-screen">
@@ -56,12 +58,10 @@ export default function PlatformPage() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="pt-6">
-              <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
-              <p className="text-muted-foreground">No recent activity</p>
-            </CardContent>
-          </Card>
+          <div className="grid md:grid-cols-2 gap-6">
+            <NotesSection platformId={platform.id} />
+            <WishlistSection platformId={platform.id} />
+          </div>
         </div>
       </main>
     </div>

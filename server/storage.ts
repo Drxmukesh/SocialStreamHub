@@ -1,4 +1,4 @@
-import { users, type User, type InsertUser, platforms, type Platform, scheduledPosts, type ScheduledPost } from "@shared/schema";
+import { users, type User, type InsertUser, platforms, type Platform, scheduledPosts, type ScheduledPost, notes, type Note, wishlist, type Wishlist } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
 
@@ -18,6 +18,14 @@ export interface IStorage {
   getScheduledPosts(userId: number): Promise<ScheduledPost[]>;
   createScheduledPost(post: Omit<ScheduledPost, "id">): Promise<ScheduledPost>;
 
+  // Notes methods
+  getNotes(userId: number): Promise<Note[]>;
+  createNote(note: Omit<Note, "id">): Promise<Note>;
+
+  // Wishlist methods
+  getWishlistItems(userId: number): Promise<Wishlist[]>;
+  createWishlistItem(item: Omit<Wishlist, "id">): Promise<Wishlist>;
+
   // Session store
   sessionStore: session.Store;
 }
@@ -26,6 +34,8 @@ export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private platforms: Map<number, Platform>;
   private scheduledPosts: Map<number, ScheduledPost>;
+  private notes: Map<number, Note>;
+  private wishlistItems: Map<number, Wishlist>;
   currentId: number;
   sessionStore: session.Store;
 
@@ -33,6 +43,8 @@ export class MemStorage implements IStorage {
     this.users = new Map();
     this.platforms = new Map();
     this.scheduledPosts = new Map();
+    this.notes = new Map();
+    this.wishlistItems = new Map();
     this.currentId = 1;
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000, // prune expired entries every 24h
@@ -86,6 +98,32 @@ export class MemStorage implements IStorage {
     const newPost: ScheduledPost = { ...post, id };
     this.scheduledPosts.set(id, newPost);
     return newPost;
+  }
+
+  async getNotes(userId: number): Promise<Note[]> {
+    return Array.from(this.notes.values()).filter(
+      (note) => note.userId === userId
+    );
+  }
+
+  async createNote(note: Omit<Note, "id">): Promise<Note> {
+    const id = this.currentId++;
+    const newNote: Note = { ...note, id, createdAt: new Date() };
+    this.notes.set(id, newNote);
+    return newNote;
+  }
+
+  async getWishlistItems(userId: number): Promise<Wishlist[]> {
+    return Array.from(this.wishlistItems.values()).filter(
+      (item) => item.userId === userId
+    );
+  }
+
+  async createWishlistItem(item: Omit<Wishlist, "id">): Promise<Wishlist> {
+    const id = this.currentId++;
+    const newItem: Wishlist = { ...item, id, createdAt: new Date() };
+    this.wishlistItems.set(id, newItem);
+    return newItem;
   }
 }
 
