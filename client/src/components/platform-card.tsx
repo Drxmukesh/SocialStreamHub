@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Platform } from "@shared/schema";
 import { Link } from "wouter";
-import { SiInstagram, SiFacebook, SiWhatsapp, SiTelegram, SiYoutube, SiThreads } from "react-icons/si";
+import { SiInstagram, SiFacebook, SiWhatsapp, SiTelegram, SiYoutube, SiThreads, SiLinkedin, SiTiktok, SiPinterest, SiX } from "react-icons/si";
 import { cn } from "@/lib/utils";
 
 const platformConfig = {
@@ -13,6 +13,10 @@ const platformConfig = {
   telegram: { icon: SiTelegram, color: "bg-sky-500" },
   youtube: { icon: SiYoutube, color: "bg-red-600" },
   threads: { icon: SiThreads, color: "bg-black" },
+  linkedin: { icon: SiLinkedin, color: "bg-blue-700" },
+  tiktok: { icon: SiTiktok, color: "bg-black" },
+  pinterest: { icon: SiPinterest, color: "bg-red-700" },
+  twitter: { icon: SiX, color: "bg-black" },
 };
 
 export function PlatformCard({ platform }: { platform: Platform }) {

@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { Platform } from "@shared/schema";
-import { SiInstagram, SiFacebook, SiWhatsapp, SiTelegram, SiYoutube, SiThreads } from "react-icons/si";
+import { SiInstagram, SiFacebook, SiWhatsapp, SiTelegram, SiYoutube, SiThreads, SiLinkedin, SiTiktok, SiPinterest, SiX } from "react-icons/si";
 
 const platformConfig = {
   instagram: { icon: SiInstagram, name: "Instagram", color: "text-pink-500" },
@@ -13,6 +13,10 @@ const platformConfig = {
   telegram: { icon: SiTelegram, name: "Telegram", color: "text-sky-500" },
   youtube: { icon: SiYoutube, name: "YouTube", color: "text-red-600" },
   threads: { icon: SiThreads, name: "Threads", color: "text-black" },
+  linkedin: { icon: SiLinkedin, name: "LinkedIn", color: "text-blue-700" },
+  tiktok: { icon: SiTiktok, name: "TikTok", color: "text-black" },
+  pinterest: { icon: SiPinterest, name: "Pinterest", color: "text-red-700" },
+  twitter: { icon: SiX, name: "X/Twitter", color: "text-black" },
 };
 
 export default function PlatformPage() {
