@@ -7,6 +7,7 @@ import { Platform } from "@shared/schema";
 import { SiInstagram, SiFacebook, SiWhatsapp, SiTelegram, SiYoutube, SiThreads, SiLinkedin, SiTiktok, SiPinterest, SiX } from "react-icons/si";
 import { NotesSection } from "@/components/notes-section";
 import { WishlistSection } from "@/components/wishlist-section";
+import { Loader2 } from "lucide-react";
 
 const platformConfig = {
   instagram: { icon: SiInstagram, name: "Instagram", color: "text-pink-500" },
@@ -23,14 +24,50 @@ const platformConfig = {
 
 export default function PlatformPage() {
   const { type } = useParams();
-  const { data: platform } = useQuery<Platform>({
+  const { data: platform, isLoading, error } = useQuery<Platform>({
     queryKey: [`/api/platforms/${type}`],
   });
 
   const config = platformConfig[type as keyof typeof platformConfig];
   const Icon = config?.icon;
 
-  if (!config || !platform) return null;
+  if (!config) {
+    return (
+      <div className="flex h-screen">
+        <Sidebar />
+        <main className="flex-1 p-8">
+          <h1 className="text-2xl font-bold text-red-500">Invalid platform type</h1>
+        </main>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen">
+        <Sidebar />
+        <main className="flex-1 p-8 flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </main>
+      </div>
+    );
+  }
+
+  if (error || !platform) {
+    return (
+      <div className="flex h-screen">
+        <Sidebar />
+        <main className="flex-1 p-8">
+          <h1 className="text-2xl font-bold text-red-500">
+            Error loading platform data
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            Please try refreshing the page
+          </p>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen">
@@ -48,11 +85,11 @@ export default function PlatformPage() {
                 <div>
                   <h3 className="text-lg font-semibold mb-2">Connection Status</h3>
                   <p className="text-muted-foreground">
-                    {platform?.connected ? "Connected" : "Not connected"}
+                    {platform.connected ? "Connected" : "Not connected"}
                   </p>
                 </div>
-                <Button variant={platform?.connected ? "destructive" : "default"}>
-                  {platform?.connected ? "Disconnect" : "Connect"}
+                <Button variant={platform.connected ? "destructive" : "default"}>
+                  {platform.connected ? "Disconnect" : "Connect"}
                 </Button>
               </div>
             </CardContent>

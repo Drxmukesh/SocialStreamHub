@@ -10,7 +10,28 @@ export async function registerRoutes(app: Express): Server {
   // Platform routes
   app.get("/api/platforms", async (req, res) => {
     if (!req.user) return res.sendStatus(401);
-    const platforms = await storage.getPlatforms(req.user.id);
+    let platforms = await storage.getPlatforms(req.user.id);
+
+    // If no platforms exist for the user, create default entries
+    if (platforms.length === 0) {
+      const defaultPlatforms = [
+        'instagram', 'facebook', 'whatsapp', 'telegram', 
+        'youtube', 'threads', 'linkedin', 'tiktok', 
+        'pinterest', 'twitter'
+      ];
+
+      for (const type of defaultPlatforms) {
+        await storage.createPlatform({
+          userId: req.user.id,
+          type,
+          connected: false,
+          metrics: "{}",
+        });
+      }
+
+      platforms = await storage.getPlatforms(req.user.id);
+    }
+
     res.json(platforms);
   });
 
